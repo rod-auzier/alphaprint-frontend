@@ -9,6 +9,7 @@ import Produto from './pages/Produto';
 import Admin from './pages/Admin';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import { RotaProtegida, RotaAdmin } from './components/RotaProtegida';
 
 function App() {
   return (
@@ -19,9 +20,15 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/cadastro" element={<Cadastro />} />
         <Route path="/produto/:id" element={<Produto />} />
-        <Route path="/carrinho" element={<Carrinho />} />
-        <Route path="/meus-pedidos" element={<MeusPedidos />} />
-        <Route path="/admin" element={<Admin />} />
+        <Route path="/carrinho" element={
+          <RotaProtegida><Carrinho /></RotaProtegida>
+        } />
+        <Route path="/meus-pedidos" element={
+          <RotaProtegida><MeusPedidos /></RotaProtegida>
+        } />
+        <Route path="/admin" element={
+          <RotaAdmin><Admin /></RotaAdmin>
+        } />
       </Routes>
       <Footer />
     </BrowserRouter>
