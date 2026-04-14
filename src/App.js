@@ -7,6 +7,7 @@ import Carrinho from './pages/Carrinho';
 import MeusPedidos from './pages/MeusPedidos';
 import Produto from './pages/Produto';
 import Admin from './pages/Admin';
+import Pagamento from './pages/Pagamento';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { RotaProtegida, RotaAdmin } from './components/RotaProtegida';
@@ -22,6 +23,9 @@ function App() {
         <Route path="/produto/:id" element={<Produto />} />
         <Route path="/carrinho" element={
           <RotaProtegida><Carrinho /></RotaProtegida>
+        } />
+        <Route path="/pagamento" element={
+          <RotaProtegida><Pagamento /></RotaProtegida>
         } />
         <Route path="/meus-pedidos" element={
           <RotaProtegida><MeusPedidos /></RotaProtegida>
