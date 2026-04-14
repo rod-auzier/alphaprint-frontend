@@ -40,3 +40,12 @@ export const criarProduto = async (dados, token) => {
   });
   return response.json();
 };
+
+export const calcularFrete = async (cep) => {
+  const response = await fetch(`${API_URL}/api/frete/calcular`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ cep })
+  });
+  return response.json();
+};
