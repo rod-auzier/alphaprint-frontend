@@ -43,12 +43,13 @@ function Pagamento() {
 
     try {
       const itensPedido = itens.map((item) => ({
-        produto: item.produto._id,
-        nome: item.produto.nome,
-        variacao: item.variacao?.nome || '',
-        preco: item.variacao ? item.variacao.preco : item.produto.preco,
-        quantidade: item.quantidade
-      }));
+  produto: item.produto._id,
+  nome: item.produto.nome,
+  variacao: item.variacao?.nome || '',
+  preco: item.variacao ? item.variacao.preco : item.produto.preco,
+  quantidade: item.quantidade,
+  urlArte: item.urlArte || ''
+}));
 
       const response = await fetch('http://localhost:5000/api/pedidos', {
         method: 'POST',

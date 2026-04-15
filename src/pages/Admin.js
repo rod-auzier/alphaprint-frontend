@@ -101,9 +101,14 @@ function PedidoAdmin({ pedido, statusOptions, statusLabel, atualizando, onAtuali
 
       <h4>Itens:</h4>
       {pedido.itens.map((item, index) => (
-        <p key={index}>
-          {item.nome} {item.variacao && `- ${item.variacao}`} x{item.quantidade}
-        </p>
+        <div key={index}>
+          <p>{item.nome} {item.variacao && `- ${item.variacao}`} x{item.quantidade}</p>
+          {item.urlArte && (
+            <a href={item.urlArte} target="_blank" rel="noreferrer">
+              Ver arte do cliente
+            </a>
+          )}
+        </div>
       ))}
 
       <div>

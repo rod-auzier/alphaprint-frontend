@@ -5,21 +5,21 @@ const CarrinhoContext = createContext();
 export function CarrinhoProvider({ children }) {
   const [itens, setItens] = useState([]);
 
-  const adicionarItem = (produto, variacao) => {
-    const itemExistente = itens.find(
-      (item) => item.produto._id === produto._id && item.variacao?.nome === variacao?.nome
-    );
+  const adicionarItem = (produto, variacao, urlArte = '') => {
+  const itemExistente = itens.find(
+    (item) => item.produto._id === produto._id && item.variacao?.nome === variacao?.nome
+   );
 
-    if (itemExistente) {
-      setItens(itens.map((item) =>
-        item.produto._id === produto._id && item.variacao?.nome === variacao?.nome
-          ? { ...item, quantidade: item.quantidade + 1 }
-          : item
-      ));
-    } else {
-      setItens([...itens, { produto, variacao, quantidade: 1 }]);
-    }
-  };
+   if (itemExistente) {
+    setItens(itens.map((item) =>
+      item.produto._id === produto._id && item.variacao?.nome === variacao?.nome
+        ? { ...item, quantidade: item.quantidade + 1 }
+        : item
+     ));
+   } else {
+    setItens([...itens, { produto, variacao, quantidade: 1, urlArte }]);
+   }
+ };
 
   const removerItem = (produtoId, variacaoNome) => {
     setItens(itens.filter(
