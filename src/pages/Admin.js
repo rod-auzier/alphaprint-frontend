@@ -169,9 +169,22 @@ function AbaProdutos({ token }) {
     categoria: '',
     descricao: '',
     preco: '',
+    dimensoes: {
+      peso: '',
+      comprimento: '',
+      altura: '',
+      largura: ''
+    },
     variacoes: []
   });
-  const [novaVariacao, setNovaVariacao] = useState({ nome: '', preco: '' });
+  const [novaVariacao, setNovaVariacao] = useState({
+    nome: '',
+    preco: '',
+    peso: '',
+    comprimento: '',
+    altura: '',
+    largura: ''
+  });
 
   useEffect(() => {
     carregarProdutos();
@@ -189,10 +202,17 @@ function AbaProdutos({ token }) {
     }
   };
 
+  const handleDimensoes = (e) => {
+    setForm({
+      ...form,
+      dimensoes: { ...form.dimensoes, [e.target.name]: e.target.value }
+    });
+  };
+
   const adicionarVariacao = () => {
     if (!novaVariacao.nome || !novaVariacao.preco) return;
     setForm({ ...form, variacoes: [...form.variacoes, { ...novaVariacao }] });
-    setNovaVariacao({ nome: '', preco: '' });
+    setNovaVariacao({ nome: '', preco: '', peso: '', comprimento: '', altura: '', largura: '' });
   };
 
   const removerVariacao = (index) => {
@@ -226,7 +246,20 @@ function AbaProdutos({ token }) {
         body: JSON.stringify({
           ...form,
           preco: parseFloat(form.preco),
-          variacoes: form.variacoes.map(v => ({ ...v, preco: parseFloat(v.preco) })),
+          dimensoes: {
+            peso: parseFloat(form.dimensoes.peso) || 0,
+            comprimento: parseFloat(form.dimensoes.comprimento) || 0,
+            altura: parseFloat(form.dimensoes.altura) || 0,
+            largura: parseFloat(form.dimensoes.largura) || 0
+          },
+          variacoes: form.variacoes.map(v => ({
+            ...v,
+            preco: parseFloat(v.preco),
+            peso: parseFloat(v.peso) || 0,
+            comprimento: parseFloat(v.comprimento) || 0,
+            altura: parseFloat(v.altura) || 0,
+            largura: parseFloat(v.largura) || 0
+          })),
           fotos: urlFoto ? [urlFoto] : []
         })
       });
@@ -234,7 +267,7 @@ function AbaProdutos({ token }) {
       const dados = await response.json();
       if (dados._id) {
         setMensagem('Produto cadastrado com sucesso!');
-        setForm({ nome: '', categoria: '', descricao: '', preco: '', variacoes: [] });
+        setForm({ nome: '', categoria: '', descricao: '', preco: '', dimensoes: { peso: '', comprimento: '', altura: '', largura: '' }, variacoes: [] });
         setFoto(null);
         setMostrarFormulario(false);
         carregarProdutos();
@@ -296,25 +329,38 @@ function AbaProdutos({ token }) {
             <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setFoto(e.target.files[0])} />
           </div>
 
+          <h4>Dimensões padrão do produto embalado</h4>
+          <div>
+            <label>Peso (kg)</label>
+            <input type="number" name="peso" value={form.dimensoes.peso} onChange={handleDimensoes} />
+          </div>
+          <div>
+            <label>Comprimento (cm)</label>
+            <input type="number" name="comprimento" value={form.dimensoes.comprimento} onChange={handleDimensoes} />
+          </div>
+          <div>
+            <label>Altura (cm)</label>
+            <input type="number" name="altura" value={form.dimensoes.altura} onChange={handleDimensoes} />
+          </div>
+          <div>
+            <label>Largura (cm)</label>
+            <input type="number" name="largura" value={form.dimensoes.largura} onChange={handleDimensoes} />
+          </div>
+
           <h4>Variações</h4>
           {form.variacoes.map((v, index) => (
             <div key={index}>
-              <span>{v.nome} — R$ {parseFloat(v.preco).toFixed(2)}</span>
+              <span>{v.nome} — R$ {parseFloat(v.preco).toFixed(2)} | {v.peso}kg {v.comprimento}x{v.altura}x{v.largura}cm</span>
               <button onClick={() => removerVariacao(index)}>Remover</button>
             </div>
           ))}
           <div>
-            <input
-              placeholder="Nome da variação (ex: 1x1m)"
-              value={novaVariacao.nome}
-              onChange={(e) => setNovaVariacao({ ...novaVariacao, nome: e.target.value })}
-            />
-            <input
-              placeholder="Preço"
-              type="number"
-              value={novaVariacao.preco}
-              onChange={(e) => setNovaVariacao({ ...novaVariacao, preco: e.target.value })}
-            />
+            <input placeholder="Nome da variação (ex: 1x1m)" value={novaVariacao.nome} onChange={(e) => setNovaVariacao({ ...novaVariacao, nome: e.target.value })} />
+            <input placeholder="Preço" type="number" value={novaVariacao.preco} onChange={(e) => setNovaVariacao({ ...novaVariacao, preco: e.target.value })} />
+            <input placeholder="Peso (kg)" type="number" value={novaVariacao.peso} onChange={(e) => setNovaVariacao({ ...novaVariacao, peso: e.target.value })} />
+            <input placeholder="Comprimento (cm)" type="number" value={novaVariacao.comprimento} onChange={(e) => setNovaVariacao({ ...novaVariacao, comprimento: e.target.value })} />
+            <input placeholder="Altura (cm)" type="number" value={novaVariacao.altura} onChange={(e) => setNovaVariacao({ ...novaVariacao, altura: e.target.value })} />
+            <input placeholder="Largura (cm)" type="number" value={novaVariacao.largura} onChange={(e) => setNovaVariacao({ ...novaVariacao, largura: e.target.value })} />
             <button onClick={adicionarVariacao}>Adicionar variação</button>
           </div>
 
