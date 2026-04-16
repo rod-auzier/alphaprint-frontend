@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { listarProdutos } from '../services/api';
+import '../styles/Home.css';
 
 function Home() {
   const [produtos, setProdutos] = useState([]);
@@ -30,10 +31,10 @@ function Home() {
   };
 
   return (
-    <div>
-      <h1>Produtos</h1>
+    <div className="home-container">
+      <h1 className="home-titulo">Produtos</h1>
 
-      <form onSubmit={handleBusca}>
+      <form className="home-filtros" onSubmit={handleBusca}>
         <input
           type="text"
           placeholder="Buscar produto..."
@@ -50,17 +51,26 @@ function Home() {
       </form>
 
       {carregando ? (
-        <p>Carregando produtos...</p>
+        <p className="home-carregando">Carregando produtos...</p>
       ) : produtos.length === 0 ? (
-        <p>Nenhum produto encontrado.</p>
+        <p className="home-vazio">Nenhum produto encontrado.</p>
       ) : (
-        <div>
+        <div className="produtos-grid">
           {produtos.map((produto) => (
-            <div key={produto._id}>
-              <h3>{produto.nome}</h3>
-              <p>{produto.categoria}</p>
-              <p>R$ {produto.preco.toFixed(2)}</p>
-              <Link to={`/produto/${produto._id}`}>Ver produto</Link>
+            <div key={produto._id} className="produto-card">
+              {produto.fotos?.length > 0 ? (
+                <img src={produto.fotos[0]} alt={produto.nome} className="produto-card-img" />
+              ) : (
+                <div className="produto-card-img-placeholder">Sem foto</div>
+              )}
+              <div className="produto-card-info">
+                <p className="produto-card-categoria">{produto.categoria}</p>
+                <p className="produto-card-nome">{produto.nome}</p>
+                <p className="produto-card-preco">R$ {produto.preco.toFixed(2)}</p>
+                <Link to={`/produto/${produto._id}`} className="produto-card-btn">
+                  Ver produto
+                </Link>
+              </div>
             </div>
           ))}
         </div>

@@ -1,0 +1,75 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --cinza-escuro: #1a1a1a;
+  --cinza-medio: #2d2d2d;
+  --cinza-claro: #3d3d3d;
+  --cinza-borda: #4d4d4d;
+  --cinza-texto: #a0a0a0;
+  --branco: #f0f0f0;
+  --laranja: #e8601c;
+  --laranja-hover: #c94f15;
+  --fundo: #121212;
+  --fundo-card: #1e1e1e;
+}
+
+body {
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  background-color: var(--fundo);
+  color: var(--branco);
+  min-height: 100vh;
+}
+
+a {
+  color: var(--laranja);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--laranja-hover);
+}
+
+button {
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+input, select, textarea {
+  background-color: var(--cinza-medio);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 4px;
+  color: var(--branco);
+  padding: 10px 12px;
+  font-size: 14px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--laranja);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+h1 { font-size: 28px; font-weight: 700; }
+h2 { font-size: 22px; font-weight: 600; }
+h3 { font-size: 18px; font-weight: 600; }
+h4 { font-size: 16px; font-weight: 600; }

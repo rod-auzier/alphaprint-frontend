@@ -1,0 +1,131 @@
+.home-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.home-titulo {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  color: var(--branco);
+}
+
+.home-filtros {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+
+.home-filtros input {
+  flex: 1;
+  min-width: 200px;
+}
+
+.home-filtros select {
+  width: 200px;
+}
+
+.home-filtros button {
+  background-color: var(--laranja);
+  color: white;
+  padding: 10px 24px;
+}
+
+.home-filtros button:hover {
+  background-color: var(--laranja-hover);
+}
+
+.produtos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.produto-card {
+  background-color: var(--fundo-card);
+  border: 1px solid var(--cinza-borda);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.produto-card:hover {
+  border-color: var(--laranja);
+  transform: translateY(-2px);
+}
+
+.produto-card-img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background-color: var(--cinza-medio);
+}
+
+.produto-card-img-placeholder {
+  width: 100%;
+  height: 180px;
+  background-color: var(--cinza-medio);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cinza-texto);
+  font-size: 13px;
+}
+
+.produto-card-info {
+  padding: 16px;
+}
+
+.produto-card-categoria {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--laranja);
+  margin-bottom: 6px;
+}
+
+.produto-card-nome {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--branco);
+  margin-bottom: 8px;
+}
+
+.produto-card-preco {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--branco);
+  margin-bottom: 12px;
+}
+
+.produto-card-btn {
+  display: block;
+  width: 100%;
+  background-color: var(--laranja);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.produto-card-btn:hover {
+  background-color: var(--laranja-hover);
+  color: white;
+}
+
+.home-vazio {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--cinza-texto);
+}
+
+.home-carregando {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--cinza-texto);
+}

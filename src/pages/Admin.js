@@ -1,18 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import '../styles/Admin.css';
 
 function Admin() {
   const [aba, setAba] = useState('pedidos');
   const { token } = useAuth();
 
   return (
-    <div>
-      <h1>Painel Admin</h1>
-      <div>
-        <button onClick={() => setAba('pedidos')} style={{ fontWeight: aba === 'pedidos' ? 'bold' : 'normal' }}>
+    <div className="admin-container">
+      <h1 className="admin-titulo">Painel Admin</h1>
+      <div className="admin-abas">
+        <button
+          className={`admin-aba-btn ${aba === 'pedidos' ? 'ativa' : ''}`}
+          onClick={() => setAba('pedidos')}
+        >
           Pedidos
         </button>
-        <button onClick={() => setAba('produtos')} style={{ fontWeight: aba === 'produtos' ? 'bold' : 'normal' }}>
+        <button
+          className={`admin-aba-btn ${aba === 'produtos' ? 'ativa' : ''}`}
+          onClick={() => setAba('produtos')}
+        >
           Produtos
         </button>
       </div>
@@ -79,13 +86,13 @@ function AbaPedidos({ token }) {
     cancelado: 'Cancelado'
   };
 
-  if (carregando) return <p>Carregando...</p>;
+  if (carregando) return <p style={{ color: '#aaa', padding: '20px' }}>Carregando...</p>;
 
   return (
-    <div>
-      <h2>Pedidos ({pedidos.length})</h2>
+    <div className="admin-painel">
+      <h2 className="admin-painel-titulo">Pedidos ({pedidos.length})</h2>
       {pedidos.length === 0 ? (
-        <p>Nenhum pedido ainda.</p>
+        <p style={{ color: '#666' }}>Nenhum pedido ainda.</p>
       ) : (
         pedidos.map((pedido) => (
           <PedidoAdmin
@@ -107,52 +114,86 @@ function PedidoAdmin({ pedido, statusOptions, statusLabel, atualizando, onAtuali
   const [rastreamento, setRastreamento] = useState(pedido.rastreamento || '');
 
   return (
-    <div style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
-      <p><strong>Pedido:</strong> #{pedido._id.slice(-6).toUpperCase()}</p>
-      <p><strong>Cliente:</strong> {pedido.usuario?.nome} — {pedido.usuario?.email}</p>
-      <p><strong>Total:</strong> R$ {pedido.total.toFixed(2)}</p>
-      <p><strong>Pagamento:</strong> {pedido.pagamento.metodo.toUpperCase()} — {pedido.pagamento.status}</p>
-      <p><strong>Data:</strong> {new Date(pedido.createdAt).toLocaleDateString('pt-BR')}</p>
+    <div className="pedido-card">
+      <div className="pedido-card-header">
+        <span className="pedido-card-id">Pedido #{pedido._id.slice(-6).toUpperCase()}</span>
+        <span className={`pedido-card-status status-${pedido.status}`}>{statusLabel[pedido.status]}</span>
+      </div>
 
-      {pedido.enderecoEntrega?.rua && (
-        <div>
-          <strong>Endereço de entrega:</strong>
-          <p>
-            {pedido.enderecoEntrega.rua}, {pedido.enderecoEntrega.numero}
-            {pedido.enderecoEntrega.complemento && ` - ${pedido.enderecoEntrega.complemento}`} — {pedido.enderecoEntrega.bairro}, {pedido.enderecoEntrega.cidade} - {pedido.enderecoEntrega.estado} / CEP: {pedido.enderecoEntrega.cep}
-          </p>
+      <div className="pedido-card-body">
+        <div className="pedido-info-grupo">
+          <span className="pedido-info-label">Cliente</span>
+          <span className="pedido-info-valor">{pedido.usuario?.nome}</span>
+          <span className="pedido-info-valor" style={{ color: '#666', fontSize: '13px' }}>{pedido.usuario?.email}</span>
         </div>
-      )}
 
-      {pedido.frete?.valor > 0 && (
-        <p><strong>Frete:</strong> {pedido.frete.prazo} — R$ {pedido.frete.valor.toFixed(2)}</p>
-      )}
-
-      <h4>Itens:</h4>
-      {pedido.itens.map((item, index) => (
-        <div key={index}>
-          <p>{item.nome} {item.variacao && `- ${item.variacao}`} x{item.quantidade}</p>
-          {item.urlArte && (
-            <a href={item.urlArte} target="_blank" rel="noreferrer">Ver arte do cliente</a>
-          )}
+        <div className="pedido-info-grupo">
+          <span className="pedido-info-label">Pagamento</span>
+          <span className="pedido-info-valor">{pedido.pagamento.metodo.toUpperCase()} — {pedido.pagamento.status}</span>
+          <span className="pedido-info-valor" style={{ fontWeight: '700', fontSize: '16px' }}>R$ {pedido.total.toFixed(2)}</span>
         </div>
-      ))}
 
-      <div>
-        <label>Status:</label>
-        <select value={status} onChange={(e) => setStatus(e.target.value)}>
-          {statusOptions.map((s) => (
-            <option key={s} value={s}>{statusLabel[s]}</option>
+        <div className="pedido-info-grupo">
+          <span className="pedido-info-label">Data</span>
+          <span className="pedido-info-valor">{new Date(pedido.createdAt).toLocaleDateString('pt-BR')}</span>
+        </div>
+
+        {pedido.frete?.valor > 0 && (
+          <div className="pedido-info-grupo">
+            <span className="pedido-info-label">Frete</span>
+            <span className="pedido-info-valor">{pedido.frete.prazo} — R$ {pedido.frete.valor.toFixed(2)}</span>
+          </div>
+        )}
+
+        {pedido.enderecoEntrega?.rua && (
+          <div className="pedido-info-grupo" style={{ gridColumn: '1 / -1' }}>
+            <span className="pedido-info-label">Endereço de entrega</span>
+            <span className="pedido-info-valor">
+              {pedido.enderecoEntrega.rua}, {pedido.enderecoEntrega.numero}
+              {pedido.enderecoEntrega.complemento && ` - ${pedido.enderecoEntrega.complemento}`} — {pedido.enderecoEntrega.bairro}, {pedido.enderecoEntrega.cidade} - {pedido.enderecoEntrega.estado} / CEP: {pedido.enderecoEntrega.cep}
+            </span>
+          </div>
+        )}
+
+        <div className="pedido-itens">
+          <span className="pedido-info-label" style={{ marginBottom: '8px', display: 'block' }}>Itens</span>
+          {pedido.itens.map((item, index) => (
+            <div key={index} className="pedido-item">
+              <span>{item.nome} {item.variacao && `— ${item.variacao}`} × {item.quantidade}</span>
+              <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+                <span style={{ fontWeight: '600' }}>R$ {(item.preco * item.quantidade).toFixed(2)}</span>
+                {item.urlArte && (
+                  <a href={item.urlArte} target="_blank" rel="noreferrer" className="pedido-item-arte">
+                    Ver arte
+                  </a>
+                )}
+              </div>
+            </div>
           ))}
-        </select>
+        </div>
+
+        <div className="pedido-acoes">
+          <div className="pedido-acoes-grupo">
+            <span className="pedido-acoes-label">Status</span>
+            <select value={status} onChange={(e) => setStatus(e.target.value)}>
+              {statusOptions.map((s) => (
+                <option key={s} value={s}>{statusLabel[s]}</option>
+              ))}
+            </select>
+          </div>
+          <div className="pedido-acoes-grupo">
+            <span className="pedido-acoes-label">Código de rastreio</span>
+            <input
+              value={rastreamento}
+              onChange={(e) => setRastreamento(e.target.value)}
+              placeholder="Ex: BR123456789BR"
+            />
+          </div>
+          <button className="btn-salvar" onClick={() => onAtualizar(pedido._id, status, rastreamento)} disabled={atualizando}>
+            {atualizando ? 'Salvando...' : 'Salvar'}
+          </button>
+        </div>
       </div>
-      <div>
-        <label>Rastreamento:</label>
-        <input value={rastreamento} onChange={(e) => setRastreamento(e.target.value)} placeholder="Código de rastreio" />
-      </div>
-      <button onClick={() => onAtualizar(pedido._id, status, rastreamento)} disabled={atualizando}>
-        {atualizando ? 'Salvando...' : 'Salvar'}
-      </button>
     </div>
   );
 }
@@ -165,25 +206,12 @@ function AbaProdutos({ token }) {
   const [mensagem, setMensagem] = useState('');
   const [foto, setFoto] = useState(null);
   const [form, setForm] = useState({
-    nome: '',
-    categoria: '',
-    descricao: '',
-    preco: '',
-    dimensoes: {
-      peso: '',
-      comprimento: '',
-      altura: '',
-      largura: ''
-    },
+    nome: '', categoria: '', descricao: '', preco: '',
+    dimensoes: { peso: '', comprimento: '', altura: '', largura: '' },
     variacoes: []
   });
   const [novaVariacao, setNovaVariacao] = useState({
-    nome: '',
-    preco: '',
-    peso: '',
-    comprimento: '',
-    altura: '',
-    largura: ''
+    nome: '', preco: '', peso: '', comprimento: '', altura: '', largura: ''
   });
 
   useEffect(() => {
@@ -203,10 +231,7 @@ function AbaProdutos({ token }) {
   };
 
   const handleDimensoes = (e) => {
-    setForm({
-      ...form,
-      dimensoes: { ...form.dimensoes, [e.target.name]: e.target.value }
-    });
+    setForm({ ...form, dimensoes: { ...form.dimensoes, [e.target.name]: e.target.value } });
   };
 
   const adicionarVariacao = () => {
@@ -224,7 +249,6 @@ function AbaProdutos({ token }) {
     setMensagem('');
     try {
       let urlFoto = '';
-
       if (foto) {
         const formData = new FormData();
         formData.append('foto', foto);
@@ -239,10 +263,7 @@ function AbaProdutos({ token }) {
 
       const response = await fetch('http://localhost:5000/api/produtos', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
         body: JSON.stringify({
           ...form,
           preco: parseFloat(form.preco),
@@ -293,35 +314,37 @@ function AbaProdutos({ token }) {
     }
   };
 
-  if (carregando) return <p>Carregando...</p>;
+  if (carregando) return <p style={{ color: '#aaa', padding: '20px' }}>Carregando...</p>;
 
   return (
-    <div>
-      <h2>Produtos ({produtos.length})</h2>
+    <div className="admin-painel">
+      <h2 className="admin-painel-titulo">Produtos ({produtos.length})</h2>
 
-      <button onClick={() => setMostrarFormulario(!mostrarFormulario)}>
-        {mostrarFormulario ? 'Cancelar' : '+ Adicionar produto'}
+      <button className="btn-adicionar" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
+        {mostrarFormulario ? '✕ Cancelar' : '+ Adicionar produto'}
       </button>
 
-      {mensagem && <p style={{ color: mensagem.includes('sucesso') ? 'green' : 'red' }}>{mensagem}</p>}
+      {mensagem && <p className={mensagem.includes('sucesso') ? 'mensagem-sucesso' : 'mensagem-erro'}>{mensagem}</p>}
 
       {mostrarFormulario && (
-        <div style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0' }}>
+        <div className="produto-form">
           <h3>Novo produto</h3>
-          <div>
-            <label>Nome</label>
-            <input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
-          </div>
-          <div>
-            <label>Categoria</label>
-            <input value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })} />
+          <div className="produto-form-grid">
+            <div>
+              <label>Nome</label>
+              <input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+            </div>
+            <div>
+              <label>Categoria</label>
+              <input value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })} />
+            </div>
           </div>
           <div>
             <label>Descrição</label>
             <textarea value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} />
           </div>
           <div>
-            <label>Preço base</label>
+            <label>Preço base (R$)</label>
             <input type="number" value={form.preco} onChange={(e) => setForm({ ...form, preco: e.target.value })} />
           </div>
           <div>
@@ -329,58 +352,64 @@ function AbaProdutos({ token }) {
             <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setFoto(e.target.files[0])} />
           </div>
 
-          <h4>Dimensões padrão do produto embalado</h4>
-          <div>
-            <label>Peso (kg)</label>
-            <input type="number" name="peso" value={form.dimensoes.peso} onChange={handleDimensoes} />
-          </div>
-          <div>
-            <label>Comprimento (cm)</label>
-            <input type="number" name="comprimento" value={form.dimensoes.comprimento} onChange={handleDimensoes} />
-          </div>
-          <div>
-            <label>Altura (cm)</label>
-            <input type="number" name="altura" value={form.dimensoes.altura} onChange={handleDimensoes} />
-          </div>
-          <div>
-            <label>Largura (cm)</label>
-            <input type="number" name="largura" value={form.dimensoes.largura} onChange={handleDimensoes} />
+          <h4>Dimensões padrão embalado</h4>
+          <div className="produto-form-dimensoes">
+            <div>
+              <label>Peso (kg)</label>
+              <input type="number" name="peso" value={form.dimensoes.peso} onChange={handleDimensoes} />
+            </div>
+            <div>
+              <label>Comprimento (cm)</label>
+              <input type="number" name="comprimento" value={form.dimensoes.comprimento} onChange={handleDimensoes} />
+            </div>
+            <div>
+              <label>Altura (cm)</label>
+              <input type="number" name="altura" value={form.dimensoes.altura} onChange={handleDimensoes} />
+            </div>
+            <div>
+              <label>Largura (cm)</label>
+              <input type="number" name="largura" value={form.dimensoes.largura} onChange={handleDimensoes} />
+            </div>
           </div>
 
           <h4>Variações</h4>
           {form.variacoes.map((v, index) => (
-            <div key={index}>
-              <span>{v.nome} — R$ {parseFloat(v.preco).toFixed(2)} | {v.peso}kg {v.comprimento}x{v.altura}x{v.largura}cm</span>
-              <button onClick={() => removerVariacao(index)}>Remover</button>
+            <div key={index} className="variacao-item">
+              <span>{v.nome} — R$ {parseFloat(v.preco).toFixed(2)} | {v.peso}kg {v.comprimento}×{v.altura}×{v.largura}cm</span>
+              <button className="btn-desativar" onClick={() => removerVariacao(index)}>Remover</button>
             </div>
           ))}
-          <div>
-            <input placeholder="Nome da variação (ex: 1x1m)" value={novaVariacao.nome} onChange={(e) => setNovaVariacao({ ...novaVariacao, nome: e.target.value })} />
+          <div className="variacao-campos">
+            <input placeholder="Nome (ex: 1x1m)" value={novaVariacao.nome} onChange={(e) => setNovaVariacao({ ...novaVariacao, nome: e.target.value })} />
             <input placeholder="Preço" type="number" value={novaVariacao.preco} onChange={(e) => setNovaVariacao({ ...novaVariacao, preco: e.target.value })} />
-            <input placeholder="Peso (kg)" type="number" value={novaVariacao.peso} onChange={(e) => setNovaVariacao({ ...novaVariacao, peso: e.target.value })} />
-            <input placeholder="Comprimento (cm)" type="number" value={novaVariacao.comprimento} onChange={(e) => setNovaVariacao({ ...novaVariacao, comprimento: e.target.value })} />
-            <input placeholder="Altura (cm)" type="number" value={novaVariacao.altura} onChange={(e) => setNovaVariacao({ ...novaVariacao, altura: e.target.value })} />
-            <input placeholder="Largura (cm)" type="number" value={novaVariacao.largura} onChange={(e) => setNovaVariacao({ ...novaVariacao, largura: e.target.value })} />
-            <button onClick={adicionarVariacao}>Adicionar variação</button>
+            <input placeholder="Peso kg" type="number" value={novaVariacao.peso} onChange={(e) => setNovaVariacao({ ...novaVariacao, peso: e.target.value })} />
+            <input placeholder="Comp cm" type="number" value={novaVariacao.comprimento} onChange={(e) => setNovaVariacao({ ...novaVariacao, comprimento: e.target.value })} />
+            <input placeholder="Alt cm" type="number" value={novaVariacao.altura} onChange={(e) => setNovaVariacao({ ...novaVariacao, altura: e.target.value })} />
+            <input placeholder="Larg cm" type="number" value={novaVariacao.largura} onChange={(e) => setNovaVariacao({ ...novaVariacao, largura: e.target.value })} />
+            <button className="btn-add-variacao" onClick={adicionarVariacao}>+ Add</button>
           </div>
 
-          <button onClick={handleSalvar} disabled={salvando}>
+          <button className="btn-salvar" style={{ marginTop: '20px' }} onClick={handleSalvar} disabled={salvando}>
             {salvando ? 'Salvando...' : 'Salvar produto'}
           </button>
         </div>
       )}
 
       {produtos.length === 0 ? (
-        <p>Nenhum produto cadastrado.</p>
+        <p style={{ color: '#666' }}>Nenhum produto cadastrado.</p>
       ) : (
         produtos.map((produto) => (
-          <div key={produto._id} style={{ border: '1px solid #ccc', margin: '10px 0', padding: '10px' }}>
-            <p><strong>{produto.nome}</strong></p>
-            <p>Categoria: {produto.categoria}</p>
-            <p>Preço: R$ {produto.preco.toFixed(2)}</p>
-            <p>Variações: {produto.variacoes.map(v => v.nome).join(', ')}</p>
-            <p>Status: {produto.ativo ? '✅ Ativo' : '❌ Inativo'}</p>
-            <button onClick={() => desativarProduto(produto._id)}>Desativar</button>
+          <div key={produto._id} className="produto-admin-card">
+            <div className="produto-admin-info">
+              <span className="produto-admin-nome">{produto.nome}</span>
+              <span className="produto-admin-detalhes">
+                {produto.categoria} — R$ {produto.preco.toFixed(2)} — {produto.variacoes.length} variação(ões)
+              </span>
+              <span className="produto-admin-detalhes">
+                {produto.ativo ? '✅ Ativo' : '❌ Inativo'}
+              </span>
+            </div>
+            <button className="btn-desativar" onClick={() => desativarProduto(produto._id)}>Desativar</button>
           </div>
         ))
       )}
