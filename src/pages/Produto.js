@@ -91,6 +91,13 @@ const handleComprar = () => {
   return (
     <div>
       <h1>{produto.nome}</h1>
+      {produto.fotos?.length > 0 && (
+  <div>
+    {produto.fotos.map((foto, index) => (
+      <img key={index} src={foto} alt={produto.nome} style={{ width: '300px', marginRight: '10px' }} />
+    ))}
+  </div>
+)}
       <p>{produto.categoria}</p>
       <p>{produto.descricao}</p>
 

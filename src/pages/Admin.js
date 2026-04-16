@@ -160,6 +160,18 @@ function PedidoAdmin({ pedido, statusOptions, statusLabel, atualizando, onAtuali
 function AbaProdutos({ token }) {
   const [produtos, setProdutos] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [salvando, setSalvando] = useState(false);
+  const [mensagem, setMensagem] = useState('');
+  const [foto, setFoto] = useState(null);
+  const [form, setForm] = useState({
+    nome: '',
+    categoria: '',
+    descricao: '',
+    preco: '',
+    variacoes: []
+  });
+  const [novaVariacao, setNovaVariacao] = useState({ nome: '', preco: '' });
 
   useEffect(() => {
     carregarProdutos();
@@ -174,6 +186,65 @@ function AbaProdutos({ token }) {
       console.error('Erro ao carregar produtos:', err);
     } finally {
       setCarregando(false);
+    }
+  };
+
+  const adicionarVariacao = () => {
+    if (!novaVariacao.nome || !novaVariacao.preco) return;
+    setForm({ ...form, variacoes: [...form.variacoes, { ...novaVariacao }] });
+    setNovaVariacao({ nome: '', preco: '' });
+  };
+
+  const removerVariacao = (index) => {
+    setForm({ ...form, variacoes: form.variacoes.filter((_, i) => i !== index) });
+  };
+
+  const handleSalvar = async () => {
+    setSalvando(true);
+    setMensagem('');
+    try {
+      let urlFoto = '';
+
+      if (foto) {
+        const formData = new FormData();
+        formData.append('foto', foto);
+        const uploadResponse = await fetch('http://localhost:5000/api/upload/produto', {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}` },
+          body: formData
+        });
+        const uploadDados = await uploadResponse.json();
+        urlFoto = uploadDados.url || '';
+      }
+
+      const response = await fetch('http://localhost:5000/api/produtos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          ...form,
+          preco: parseFloat(form.preco),
+          variacoes: form.variacoes.map(v => ({ ...v, preco: parseFloat(v.preco) })),
+          fotos: urlFoto ? [urlFoto] : []
+        })
+      });
+
+      const dados = await response.json();
+      if (dados._id) {
+        setMensagem('Produto cadastrado com sucesso!');
+        setForm({ nome: '', categoria: '', descricao: '', preco: '', variacoes: [] });
+        setFoto(null);
+        setMostrarFormulario(false);
+        carregarProdutos();
+      } else {
+        setMensagem(dados.mensagem || 'Erro ao cadastrar produto');
+      }
+    } catch (err) {
+      setMensagem('Erro ao conectar com o servidor');
+    } finally {
+      setSalvando(false);
     }
   };
 
@@ -194,6 +265,65 @@ function AbaProdutos({ token }) {
   return (
     <div>
       <h2>Produtos ({produtos.length})</h2>
+
+      <button onClick={() => setMostrarFormulario(!mostrarFormulario)}>
+        {mostrarFormulario ? 'Cancelar' : '+ Adicionar produto'}
+      </button>
+
+      {mensagem && <p style={{ color: mensagem.includes('sucesso') ? 'green' : 'red' }}>{mensagem}</p>}
+
+      {mostrarFormulario && (
+        <div style={{ border: '1px solid #ccc', padding: '10px', margin: '10px 0' }}>
+          <h3>Novo produto</h3>
+          <div>
+            <label>Nome</label>
+            <input value={form.nome} onChange={(e) => setForm({ ...form, nome: e.target.value })} />
+          </div>
+          <div>
+            <label>Categoria</label>
+            <input value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })} />
+          </div>
+          <div>
+            <label>Descrição</label>
+            <textarea value={form.descricao} onChange={(e) => setForm({ ...form, descricao: e.target.value })} />
+          </div>
+          <div>
+            <label>Preço base</label>
+            <input type="number" value={form.preco} onChange={(e) => setForm({ ...form, preco: e.target.value })} />
+          </div>
+          <div>
+            <label>Foto do produto</label>
+            <input type="file" accept=".jpg,.jpeg,.png,.webp" onChange={(e) => setFoto(e.target.files[0])} />
+          </div>
+
+          <h4>Variações</h4>
+          {form.variacoes.map((v, index) => (
+            <div key={index}>
+              <span>{v.nome} — R$ {parseFloat(v.preco).toFixed(2)}</span>
+              <button onClick={() => removerVariacao(index)}>Remover</button>
+            </div>
+          ))}
+          <div>
+            <input
+              placeholder="Nome da variação (ex: 1x1m)"
+              value={novaVariacao.nome}
+              onChange={(e) => setNovaVariacao({ ...novaVariacao, nome: e.target.value })}
+            />
+            <input
+              placeholder="Preço"
+              type="number"
+              value={novaVariacao.preco}
+              onChange={(e) => setNovaVariacao({ ...novaVariacao, preco: e.target.value })}
+            />
+            <button onClick={adicionarVariacao}>Adicionar variação</button>
+          </div>
+
+          <button onClick={handleSalvar} disabled={salvando}>
+            {salvando ? 'Salvando...' : 'Salvar produto'}
+          </button>
+        </div>
+      )}
+
       {produtos.length === 0 ? (
         <p>Nenhum produto cadastrado.</p>
       ) : (
