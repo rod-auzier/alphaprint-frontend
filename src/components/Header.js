@@ -18,6 +18,7 @@ function Header() {
         {usuario ? (
           <>
             <span>Olá, {usuario.nome}</span>
+            <Link to="/perfil">Meu Perfil</Link>
             <Link to="/carrinho">Carrinho</Link>
             <Link to="/meus-pedidos">Meus Pedidos</Link>
             {usuario.role === 'admin' && (
