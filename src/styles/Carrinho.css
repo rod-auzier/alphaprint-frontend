@@ -1,0 +1,248 @@
+.carrinho-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.carrinho-titulo {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 24px;
+}
+
+/* VAZIO */
+.carrinho-vazio {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 60px 20px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+}
+
+.carrinho-vazio p {
+  color: #888;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.carrinho-vazio button {
+  background-color: var(--laranja);
+  color: white;
+  padding: 10px 24px;
+}
+
+.carrinho-vazio button:hover {
+  background-color: var(--laranja-hover);
+}
+
+/* LAYOUT */
+.carrinho-layout {
+  display: grid;
+  grid-template-columns: 1fr 320px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ITENS */
+.carrinho-itens {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.carrinho-item {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+
+.carrinho-item-foto {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  flex-shrink: 0;
+}
+
+.carrinho-item-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.carrinho-item-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.carrinho-item-nome {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.carrinho-item-variacao {
+  font-size: 13px;
+  color: #666;
+  margin-top: 2px;
+}
+
+.carrinho-item-arte {
+  margin-top: 4px;
+  font-size: 13px;
+}
+
+.carrinho-item-arte a {
+  color: #22a04b;
+  font-weight: 600;
+}
+
+.carrinho-item-arte a:hover {
+  color: #1a8a3e;
+}
+
+.carrinho-item-remover {
+  background: transparent;
+  border: 1px solid #ccc;
+  color: #888;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.carrinho-item-remover:hover {
+  border-color: #e53e3e;
+  color: #e53e3e;
+}
+
+.carrinho-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
+
+.carrinho-item-preco {
+  font-size: 13px;
+  color: #888;
+  margin-right: 12px;
+}
+
+.carrinho-item-subtotal {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+/* QUANTIDADE */
+.carrinho-quantidade {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.carrinho-quantidade button {
+  background: #e8e8e8;
+  color: #1a1a1a;
+  border: none;
+  border-radius: 0;
+  padding: 6px 12px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.carrinho-quantidade button:hover {
+  background: #d0d0d0;
+}
+
+.carrinho-quantidade span {
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #1a1a1a;
+  background: #fff;
+  min-width: 36px;
+  text-align: center;
+}
+
+/* RESUMO */
+.carrinho-resumo {
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 24px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.07);
+  position: sticky;
+  top: 84px;
+}
+
+.carrinho-resumo-titulo {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #eee;
+}
+
+.carrinho-resumo-linha {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 10px;
+}
+
+.carrinho-resumo-total {
+  display: flex;
+  justify-content: space-between;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1a1a1a;
+  padding-top: 12px;
+  margin-top: 4px;
+  border-top: 2px solid #e0e0e0;
+  margin-bottom: 20px;
+}
+
+.carrinho-btn-finalizar {
+  width: 100%;
+  background-color: var(--laranja);
+  color: white;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.carrinho-btn-finalizar:hover {
+  background-color: var(--laranja-hover);
+}
+
+@media (max-width: 700px) {
+  .carrinho-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .carrinho-item-foto {
+    width: 70px;
+    height: 70px;
+  }
+}
