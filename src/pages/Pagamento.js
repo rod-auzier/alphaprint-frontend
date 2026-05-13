@@ -69,7 +69,7 @@ function Pagamento() {
       const pedido = await response.json();
       if (pedido._id) {
         limparCarrinho();
-        navigate('/meus-pedidos');
+        navigate('/pedido-confirmado', { state: { pedido } });
       } else {
         setErro(pedido.mensagem || 'Erro ao criar pedido');
       }
