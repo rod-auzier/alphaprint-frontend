@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { listarProdutos } from '../services/api';
 import '../styles/Home.css';
 
 function Home() {
   const [produtos, setProdutos] = useState([]);
-  const [busca, setBusca] = useState('');
-  const [categoria, setCategoria] = useState('');
   const [carregando, setCarregando] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const params = new URLSearchParams(location.search);
+  const buscaParam = params.get('busca') || '';
+  const categoriaParam = params.get('categoria') || '';
 
   useEffect(() => {
-    carregarProdutos();
-  }, []);
+    carregarProdutos({ busca: buscaParam, categoria: categoriaParam });
+  }, [location.search]);
 
   const carregarProdutos = async (filtros = {}) => {
     setCarregando(true);
@@ -25,30 +29,17 @@ function Home() {
     }
   };
 
-  const handleBusca = (e) => {
-    e.preventDefault();
-    carregarProdutos({ busca, categoria });
-  };
+  const temFiltro = buscaParam || categoriaParam;
 
   return (
     <div className="home-container">
-      <h1 className="home-titulo">Produtos</h1>
-
-      <form className="home-filtros" onSubmit={handleBusca}>
-        <input
-          type="text"
-          placeholder="Buscar produto..."
-          value={busca}
-          onChange={(e) => setBusca(e.target.value)}
-        />
-        <select value={categoria} onChange={(e) => setCategoria(e.target.value)}>
-          <option value="">Todas as categorias</option>
-          <option value="Banners">Banners</option>
-          <option value="Adesivos">Adesivos</option>
-          <option value="Impressos">Impressos</option>
-        </select>
-        <button type="submit">Buscar</button>
-      </form>
+      {temFiltro && (
+        <div className="home-filtros-ativos">
+          {categoriaParam && <span className="home-filtro-tag">📂 {categoriaParam}</span>}
+          {buscaParam && <span className="home-filtro-tag">🔍 "{buscaParam}"</span>}
+          <button className="home-limpar-busca" onClick={() => navigate('/')}>✕ Limpar filtros</button>
+        </div>
+      )}
 
       {carregando ? (
         <p className="home-carregando">Carregando produtos...</p>
@@ -57,7 +48,11 @@ function Home() {
       ) : (
         <div className="produtos-grid">
           {produtos.map((produto) => (
-            <div key={produto._id} className="produto-card">
+            <div
+              key={produto._id}
+              className="produto-card"
+              onClick={() => navigate(`/produto/${produto._id}`)}
+            >
               {produto.fotos?.length > 0 ? (
                 <img src={produto.fotos[0]} alt={produto.nome} className="produto-card-img" />
               ) : (
@@ -67,9 +62,6 @@ function Home() {
                 <p className="produto-card-categoria">{produto.categoria}</p>
                 <p className="produto-card-nome">{produto.nome}</p>
                 <p className="produto-card-preco">R$ {produto.preco.toFixed(2)}</p>
-                <Link to={`/produto/${produto._id}`} className="produto-card-btn">
-                  Ver produto
-                </Link>
               </div>
             </div>
           ))}

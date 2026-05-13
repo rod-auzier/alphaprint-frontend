@@ -396,3 +396,24 @@
   border-color: var(--laranja);
   outline: none;
 }
+
+.admin-categoria-form {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.btn-editar {
+  background-color: transparent;
+  border: 1px solid #90b8d8;
+  color: #2c7aaa;
+  padding: 6px 14px;
+  font-size: 13px;
+  border-radius: 4px;
+}
+
+.btn-editar:hover {
+  background-color: #e8f4fb;
+  border-color: #2c7aaa;
+}
